@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sorting visualization</title>
+<link rel="stylesheet" type="text/css" href="index.css">
+</head>
+<body>
+
+<h1>Heading</h1>
+<p>Paragraph here.</p>
+<div id="myDynamicTable">
+	
+</div>
+ 
+<script>
+ 
+function addTable() {
+  var myTableDiv = document.getElementById("myDynamicTable");
+
+  var table = document.createElement('TABLE');
+  table.border = '1';
+
+  var tableBody = document.createElement('TBODY');
+  table.appendChild(tableBody);
+
+  for (var i = 0; i < 61; i++) {
+    var tr = document.createElement('TR');
+    tableBody.appendChild(tr);
+
+    for (var j = 0; j < 61; j++) {
+      var td = document.createElement('TD');
+     	td.width = '50';
+
+		if (j === 0) {
+		var p = document.createElement("p");
+		p.classList.add('rotate');
+		var t = document.createTextNode(i-1);
+		p.appendChild(t);
+		td.appendChild(p);
+		td.classList.add('outer');
+		}  
+
+     if (i === 0 && j !== 0) {
+     	td.appendChild(document.createTextNode(j-1));
+     	td.classList.add('outer');
+     }
+
+     if (i !== 0 && j !== 0) {
+     	td.classList.add('color');
+     	// apply color based on data 
+
+     }
+
+     tr.appendChild(td);
+    }
+  }
+  myTableDiv.appendChild(table);
+}
+
+addTable();
+
+
+function genData() {
+
+var newDataSet = []; 
+for (var i = 0; i < 3600; i++){
+	let item = {}
+	let r = Math.random().toString(36).substring(7);
+	item.name = r[0];
+
+  // generates color on blue spectrum
+  	// var randColor = "rgb(0,100, " + (Math.floor(Math.random() * 675)) + ")";
+
+  // generate HSL
+  var randColor = "hsl(" + 360 * Math.random() + ',' +
+                 (25 + 70 * Math.random()) + '%,' + 
+                 (85 + 10 * Math.random()) + '%)'
+
+  if (i > 0) {
+	  for (var c = 0; c < i; c++) {
+		if (newDataSet[c].name === r[0]) {
+			item.color = newDataSet[c].color;
+		}
+	  }
+	  if (!item.color) {
+	  	item.color = randColor; 
+	  }
+  } else {
+  	  item.color = randColor;
+  }
+  newDataSet.push(item)
+}
+return newDataSet;  
+} 
+
+var inputData = genData();
+// compare ogData with sorted
+ 
+// loop through every class 
+function comparePreviousData(args) {
+   var colors = document.getElementsByClassName("color");
+    for(var i = 0; i < colors.length; i++){
+        colors[i].style.backgroundColor = args[i].color;
+    }
+}
+setTimeout(function(){  
+	comparePreviousData(inputData);
+ }, 1000);
+</script>
+
+</body>
+</html>
