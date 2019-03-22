@@ -2,8 +2,11 @@ const generateData = () => {
 	var newDataSet = []; 
 	for (var i = 0; i < 3600; i++){
 		let item = {}
-		let r = Math.random().toString(36).substring(7);
-		item.name = r[0];
+		// let r = Math.random().toString(36).substring(7);
+		// item.name = r[0];
+
+		let r = i; // order 1, 2, 3... 
+		item.name = r; 
 		
 		// generates color on blue spectrum
 		// var randColor = "rgb(0,100, " + (Math.floor(Math.random() * 675)) + ")";
