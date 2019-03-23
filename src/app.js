@@ -1,14 +1,20 @@
 import {generateData} from './modules/generateData';
+import {compareData} from './modules/compareData';
 import {generateTable} from './modules/generateTable';
 
 generateTable();
 
-// need to compare pre and post sorted data
+// compare pre and post sorted data
+let firstData = generateData(); 
+
+// sort data in a specific way
 // to do... 
+
+// compare data sets multiple times
+// to do... 
+
 
 // pass that sorted outcome to the table
-// to do... 
-
 const colorTable = args => {
    	let colors = document.getElementsByClassName('color');
     for(let i = 0; i < colors.length; i++){
@@ -16,10 +22,11 @@ const colorTable = args => {
    			colors[i].style.backgroundColor = '#efefef';
    		} else {
 			colors[i].style.backgroundColor = args[i].color;
+			colors[i].style.opacity = args[i].opacity;
    		}
     }
 }
 
 setTimeout(function(){  
-	colorTable(generateData());
+	colorTable(/* data passed here */);
 }, 10);
