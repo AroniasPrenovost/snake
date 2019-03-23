@@ -5,7 +5,7 @@ import {generateTable} from './modules/generateTable';
 generateTable();
 
 // compare pre and post sorted data
-let firstData = generateData(); 
+compareData(generateData()); 
 
 // sort data in a specific way
 // to do... 

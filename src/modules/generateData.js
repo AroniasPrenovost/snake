@@ -4,9 +4,9 @@ const generateData = () => {
 	while (i < 3600) {
 		let item = {}
 		let r = i; // order 1, 2, 3... 
-		item.name = r;
+		item.key = r;
 		item.color = '#3498db';
-		item.opacity = 1;  
+		item.opacity = 0;  
 		newDataSet.push(item)
 		i++; 
 	}
