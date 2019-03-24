@@ -1,5 +1,5 @@
 const generateData = () => {
-	var newDataSet = [];
+	let newDataSet = [];
 	let i = 0; 
 	while (i < 3600) {
 		let item = {}
@@ -10,7 +10,7 @@ const generateData = () => {
 		newDataSet.push(item)
 		i++; 
 	}
-	
+
 	return newDataSet;  
 } 
  

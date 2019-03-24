@@ -13,7 +13,7 @@ function es6shuffleTwo(a) {
 	var x = a.sort(function() {
 		return .5 - Math.random();
 	});
-	
+
 	return x; 
 }
 
