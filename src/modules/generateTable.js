@@ -26,9 +26,11 @@ const generateTable = () => {
 				td.classList.add('color');
 				// apply color based on data 
 			}
+			
 			tr.appendChild(td);
 		}
 	}
+
 	myTableDiv.appendChild(table);
 }
 

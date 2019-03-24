@@ -1,18 +1,10 @@
 import {generateData} from './modules/generateData';
 import {compareData} from './modules/compareData';
 import {generateTable} from './modules/generateTable';
+import {es6shuffle, es6shuffleTwo, prototype} from "./modules/sortFunctions";
 
+// initialize 
 generateTable();
-
-// compare pre and post sorted data
-compareData(generateData()); 
-
-// sort data in a specific way
-// to do... 
-
-// compare data sets multiple times
-// to do... 
-
 
 // pass that sorted outcome to the table
 const colorTable = args => {
@@ -27,6 +19,8 @@ const colorTable = args => {
     }
 }
 
-setTimeout(function(){  
-	colorTable(/* data passed here */);
-}, 10);
+// compare pre and post sorted data
+let tableData = compareData(generateData(), es6shuffleTwo);
+
+// color table  
+colorTable(tableData);
