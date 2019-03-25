@@ -13,7 +13,7 @@ function es6shuffleTwo(a) {
 	var x = a.sort(function() {
 		return .5 - Math.random();
 	});
-
+	
 	return x; 
 }
 
@@ -31,4 +31,16 @@ function prototype(a) {
 	return a.shuffle();
 }
 
-export {es6shuffle, es6shuffleTwo, prototype};
+function nativeSwap(a) {
+  var n = a.length, i = -1, j, k;
+  while (++i < n) {
+    j = Math.floor(Math.random() * n);
+    k = Math.floor(Math.random() * n);
+    let t = a[j];
+    a[j] = a[k];
+    a[k] = t;
+  }
+  return a; 
+}
+
+export {es6shuffle, es6shuffleTwo, prototype, nativeSwap};
