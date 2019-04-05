@@ -5,7 +5,7 @@ const generateData = () => {
 		let item = {}
 		let r = i; // order 1, 2, 3... 
 		item.key = r;
-		item.baseColor = '#f6e58d';
+		item.baseColor = 'white';
 		item.color1 = '#ffbe76';
 		item.color2 = '#ff7979';
 		item.color3 = '#badc58';
@@ -16,7 +16,7 @@ const generateData = () => {
 		item.color8 = '#6ab04c';
 		item.color9 = '#22a6b3';
 		item.color10 = '#be2edd';
-		item.opacity = .1;  
+		item.opacity = .0;  
 		newDataSet.push(item)
 		i++; 
 	}

@@ -6,7 +6,7 @@ import {es6shuffle, es6shuffleTwo, prototype, nativeSwap} from "./modules/sortFu
 // initialize 
 generateTable();
 
-// pass that sorted outcome to the table
+// pass sorted outcome to the table
 const colorTable = args => {
 let colors = document.getElementsByClassName('color');
 	for(let i = 0; i < colors.length; i++){
@@ -16,7 +16,8 @@ let colors = document.getElementsByClassName('color');
    		} else {
 			colors[i].style.backgroundColor = args[i].baseColor;
 			colors[i].style.opacity = args[i].opacity;
-   		}*/
+   		}
+   	*/
 
 		// color spectrum 
 		if (!args) {
@@ -25,8 +26,8 @@ let colors = document.getElementsByClassName('color');
 			// round to 1 decimal point, convert to # 
 			args[i].opacity = Number((Math.round(args[i].opacity * 10) / 10).toFixed(1));
 
-			if (args[i].opacity < .0) {
-				colors[i].style.backgroundColor = 'white';
+			if (args[i].opacity === .0) {
+				colors[i].style.backgroundColor = args[i].baseColor;
 			} else if (args[i].opacity < .1) {
 				colors[i].style.backgroundColor = args[i].color1;
 			} else if (args[i].opacity < .2) {
