@@ -1,5 +1,5 @@
 {
-  "name": "es6-gulp-boilerplate",
+  "name": "snake",
   "version": "0.1.0",
   "description": "Gulp, sass, webpack and ES6 modules",
   "scripts": {

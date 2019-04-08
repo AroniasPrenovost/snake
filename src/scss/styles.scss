@@ -12,8 +12,9 @@ td {
 	background-color: none;
 	border:1px solid white;
 	font-size:4px;
+	height:12px;
 	vertical-align: bottom;
-	min-width: 8px; 
+	min-width: 4px; 
 	padding: 0 0 0 0;
 }
 
@@ -43,3 +44,9 @@ table, th, td {
 	transform:rotate(270deg);
 	transform-origin: left top 0;
 }
+
+span {
+  font-size: 20px;
+  color: #999
+}
+

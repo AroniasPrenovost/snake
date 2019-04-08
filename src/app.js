@@ -1,60 +1,229 @@
-import {generateData} from './modules/generateData';
-import {compareData} from './modules/compareData';
 import {generateTable} from './modules/generateTable';
-import {es6shuffle, es6shuffleTwo, prototype, nativeSwap} from "./modules/sortFunctions";
+import {shuffle} from "./modules/shuffle";
 
 // initialize 
 generateTable();
 
-// pass sorted outcome to the table
-const colorTable = args => {
-let colors = document.getElementsByClassName('color');
+var colors = document.getElementsByClassName('color');
+
+// pass sorted outcome to the table 
+const colorTable = () => {
 	for(let i = 0; i < colors.length; i++){
-		// monotone heat map 
-		/* if (!args) {
-   			colors[i].style.backgroundColor = '#c7ecee';
-   		} else {
-			colors[i].style.backgroundColor = args[i].baseColor;
-			colors[i].style.opacity = args[i].opacity;
-   		}
-   	*/
+   	colors[i].style.backgroundColor = 'white';
+	}
+}
 
-		// color spectrum 
-		if (!args) {
-			colors[i].style.backgroundColor = '#22a6b3';
-		} else {
-			// round to 1 decimal point, convert to # 
-			args[i].opacity = Number((Math.round(args[i].opacity * 10) / 10).toFixed(1));
+// color table 
+colorTable();
 
-			if (args[i].opacity === .0) {
-				colors[i].style.backgroundColor = args[i].baseColor;
-			} else if (args[i].opacity < .1) {
-				colors[i].style.backgroundColor = args[i].color1;
-			} else if (args[i].opacity < .2) {
-				colors[i].style.backgroundColor = args[i].color2;
-			} else if (args[i].opacity < .3) {
-				colors[i].style.backgroundColor = args[i].color3;
-			} else if (args[i].opacity < .4) {
-				colors[i].style.backgroundColor = args[i].color4;
-			} else if(args[i].opacity < .5) {
-				colors[i].style.backgroundColor = args[i].color5;
-			}else if (args[i].opacity < .6) {
-				colors[i].style.backgroundColor = args[i].color6;
-			} else if(args[i].opacity < .7) {
-				colors[i].style.backgroundColor = args[i].color7;
-			} else if (args[i].opacity < .8) {
-				colors[i].style.backgroundColor = args[i].color8;
-			} else if (args[i].opacity < .9) {
-				colors[i].style.backgroundColor = args[i].color9;
-			}else {
-				colors[i].style.backgroundColor = args[i].color10;
-			}
+// get arrow key press
+var d = document;
+var direction; 
+
+d.onkeydown = d.body.onkeydown = function(e){
+	e = e || window.event;
+	direction = e.keyCode || e.which;
+
+	if (direction == 37) {
+		direction = 'left';
+	} else if (direction == 38) {
+		direction = 'up';
+	} else if (direction == 39) {
+		direction = 'right';
+	} else if (direction == 40) {
+		direction = 'down';
+	}else {
+		direction = null;
+	}
+}
+
+// add snake food at random location on grid 
+function generateFood(){
+	let random = shuffle([...Array(colors.length).keys()]);
+	if (colors[random[0]].style.backgroundColor !== 'green' && colors[random[0]].style.backgroundColor !== 'orange') {
+		colors[random[0]].style.backgroundColor = 'green';
+		foodLocation.push(random[0]); 
+	}
+}
+
+// check boundaries 
+function checkHorizontalBoundaries(args, dir) {
+	let size = colors.length; 
+	let height = document.getElementById('table').rows.length;
+	let rowLength = Math.floor((height/size)*100);
+
+	if (dir === 'right') {
+		if (args % rowLength === 0) {
+			return 'bound'; 
+		} 
+	}
+
+	if (dir === 'left') {
+		if ((args - 1) % rowLength === 0) {
+			return 'bound'; 
 		}
 	}
 }
 
-// compare pre and post sorted data
-let tableData = compareData(generateData(), es6shuffle);
+// control snake 
+// current board position based on total 'length'
+var currentPos = 4; // 4 is start position 
+var lastPos = [];
+var trimTail = false;
+var foodLocation = [];
+var backup;  
+var moves = 0;
+var timesRun = 0;
 
-// color table  
-colorTable(tableData);
+var interval = setInterval(function(){
+    timesRun += 1;
+    /* if(timesRun === 1000){ clearInterval(interval); } */
+
+	if (direction === 'down' && moves === 0) {
+		colors[currentPos].style.backgroundColor = 'orange';
+		moves++;
+		colors[currentPos].style.backgroundColor = 'white';
+		lastPos.push(colors[currentPos]); 
+	}
+
+	if (direction == 'right') {
+		moves++;  
+		currentPos++;
+
+		 if (colors[currentPos].style.backgroundColor !== 'orange') {
+			colors[currentPos].style.backgroundColor = 'orange';
+			lastPos.push(colors[currentPos]); 
+		} else {
+			alert('error');
+			return; 
+		}
+
+		if(moves > 5) {
+			lastPos[0].style.backgroundColor = 'white';
+			backup = lastPos[0];
+			lastPos.shift();
+		}
+	}
+
+	if (direction === 'left') {
+		moves++;
+		--currentPos;
+		if (colors[currentPos].style.backgroundColor !== 'orange') {
+			colors[currentPos].style.backgroundColor = 'orange';
+			lastPos.push(colors[currentPos]);  
+		} else {
+			alert('error');
+			return; 
+		}
+
+		if (moves > 5) {
+			lastPos[0].style.backgroundColor = 'white';
+			backup = lastPos[0];
+			lastPos.shift();
+		}
+	}
+
+	if (direction === 'down' && moves > 0) {
+		moves++;
+		currentPos+=10;
+		if (!colors[currentPos]) {
+			clearInterval(interval);
+			console.log('bound');
+			// to do....
+		}
+		if (colors[currentPos].style.backgroundColor !== 'orange') {
+			colors[currentPos].style.backgroundColor = 'orange';
+			lastPos.push(colors[currentPos]);  
+		} else {
+			alert('error');
+			return; 
+		}
+
+		if(moves > 5) {
+			lastPos[0].style.backgroundColor = 'white';
+			backup = lastPos[0];
+			lastPos.shift();
+		}
+	}
+
+	if (direction === 'up') {
+		moves++;
+		currentPos = currentPos - 10;
+		if (!colors[currentPos]) {
+			clearInterval(interval);
+			console.log('bound');
+			// to do....
+		}
+		if (colors[currentPos].style.backgroundColor !== 'orange') {
+			colors[currentPos].style.backgroundColor = 'orange';
+			lastPos.push(colors[currentPos]); 
+		} else {
+			alert('error');
+			return; 
+		}
+
+		if (moves > 5) {
+			lastPos[0].style.backgroundColor = 'white';
+			backup = lastPos[0];
+			lastPos.shift();
+		}
+	}
+
+	// initialize snake length 
+	if (moves > 5 && trimTail === false) {
+		lastPos[0].style.backgroundColor = 'white';
+		backup = lastPos[0];
+		lastPos.shift(); 
+		trimTail = true; 
+	}
+
+	if (checkHorizontalBoundaries(currentPos+1, direction) === 'bound') {
+		clearInterval(interval);
+		console.log('bound');
+		// to do....  
+	} 
+
+	for (var s = 0; s < foodLocation.length; s++) {
+		if (direction === 'right'){
+			if (currentPos - 1 === foodLocation[s]) {
+				lastPos.unshift(backup)
+				colors[backup].style.backgroundColor = 'orange';
+				return false; 
+			}
+		}
+		if (direction === 'left'){
+			if (currentPos + 1 === foodLocation[s]) {
+				lastPos.unshift(backup)
+				colors[backup].style.backgroundColor = 'orange';
+				return false; 
+			}
+		}
+		if (direction === 'down'){
+			if (currentPos - 10 === foodLocation[s]) {
+				lastPos.unshift(backup)
+				colors[backup].style.backgroundColor = 'orange';
+				return false; 
+			}
+		}
+		if (direction === 'up'){
+			if (currentPos + 10 === foodLocation[s]) {
+				lastPos.unshift(backup)
+				colors[backup].style.backgroundColor = 'orange';
+				return false; 
+			}
+		}
+	}
+
+	// generate food every 100 moves 
+	if (moves % 100 === 0 && moves !== 0) {
+		generateFood();
+	}
+
+	d.onkeyup = d.body.onkeyup = function(e){
+    if(e.keyCode == 32){
+    	clearInterval(interval);
+			console.log('paused');
+    }
+	}
+
+}, 120); 
