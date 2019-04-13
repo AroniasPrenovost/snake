@@ -5,10 +5,10 @@ const generateTable = () => {
 	table.id = 'table'
 	let tableBody = document.createElement('TBODY');
 	table.appendChild(tableBody);
-	for (let i = 0; i < 24; i++) {
+	for (let i = 0; i < 24; i++) { // 24 for / 10 
 		let tr = document.createElement('TR');
 		tableBody.appendChild(tr);
-		for (let j = 0; j < 11; j++) {
+		for (let j = 0; j < 31; j++) { // 11 for / 10 
 			let td = document.createElement('TD');
 			td.width = '20';
 			if (i !== 0 && j !== 0) {
@@ -21,4 +21,10 @@ const generateTable = () => {
 	myTableDiv.appendChild(table);
 }
 
-export {generateTable};
+function colorTable(args, color) {
+	for(let i = 0; i < args.length; i++){
+   	args[i].style.backgroundColor = color;
+	}
+}
+
+export {generateTable, colorTable};

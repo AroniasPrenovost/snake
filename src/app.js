@@ -1,67 +1,37 @@
-import {generateTable} from './modules/generateTable';
+import {generateTable, colorTable} from './modules/generateTable';
 import {shuffle} from "./modules/shuffle";
+
+var white = 'rgb(255, 255, 255)';
+var green = 'rgb(51, 217, 178)';
+var black = 'rgb(44, 62, 80)';
+var red = 'rgb(179, 57, 57)'; 
 
 // initialize 
 generateTable();
-
 var colors = document.getElementsByClassName('color');
+colorTable(colors, white);
 
-// pass sorted outcome to the table 
-const colorTable = () => {
-	for(let i = 0; i < colors.length; i++){
-   	colors[i].style.backgroundColor = 'white';
-	}
-}
-
-// color table 
-colorTable();
-
-// get arrow key press
+// arrow key press
 var d = document;
 var direction; 
-
 d.onkeydown = d.body.onkeydown = function(e){
 	e = e || window.event;
-	direction = e.keyCode || e.which;
 
-	if (direction == 37) {
-		direction = 'left';
-	} else if (direction == 38) {
-		direction = 'up';
-	} else if (direction == 39) {
-		direction = 'right';
-	} else if (direction == 40) {
-		direction = 'down';
-	}else {
-		direction = null;
-	}
-}
-
-// add snake food at random location on grid 
-function generateFood(){
-	let random = shuffle([...Array(colors.length).keys()]);
-	if (colors[random[0]].style.backgroundColor !== 'green' && colors[random[0]].style.backgroundColor !== 'orange') {
-		colors[random[0]].style.backgroundColor = 'green';
-		foodLocation.push(random[0]); 
-	}
-}
-
-// check boundaries 
-function checkHorizontalBoundaries(args, dir) {
-	let size = colors.length; 
-	let height = document.getElementById('table').rows.length;
-	let rowLength = Math.floor((height/size)*100);
-
-	if (dir === 'right') {
-		if (args % rowLength === 0) {
-			return 'bound'; 
-		} 
-	}
-
-	if (dir === 'left') {
-		if ((args - 1) % rowLength === 0) {
-			return 'bound'; 
-		}
+	switch (e.keyCode || e.which) {
+	  case 37:
+	    direction = 'left';
+	    break;
+	  case 38:
+	    direction = 'up';
+	    break;
+	  case 39:
+	     direction = 'right';
+	    break;
+	  case 40:
+	    direction = 'down';
+	    break;
+	  case 4:
+	    direction = null;
 	}
 }
 
@@ -73,157 +43,184 @@ var trimTail = false;
 var foodLocation = [];
 var backup;  
 var moves = 0;
-var timesRun = 0;
+
+
+// board specs 
+var tableCells = colors.length;
+var height = document.getElementById('table').rows.length;
+var rowLength = Math.ceil((tableCells/height))+1; // should be divisible by 10 
+
+function checkHorizontalBoundaries(args, dir) {
+	console.log(rowLength)
+	if (dir === 'right') {
+		if (args % rowLength === 0) {  
+			return false; 
+		} 
+	}
+
+	if (dir === 'left') {
+		if ((args+1) % rowLength === 0) {  
+			return false; 
+		}
+	}
+	return true; 
+}
+
+// add snake food at random location on grid 
+function generateFood() {
+	let rand = shuffle([...Array(colors.length).keys()])[0];
+	if (colors[rand].style.backgroundColor !== green && colors[rand].style.backgroundColor !== black) {
+		colors[rand].style.backgroundColor = green;
+		foodLocation.push(rand); 
+	}
+}
+
+generateFood(); 
+
+// initialize snake length 
+function snakeChange() {
+	if (moves > 1) {
+		lastPos[0].style.backgroundColor = white;
+		backup = lastPos[0];
+		lastPos.shift(); 
+		trimTail = true; 
+	}
+}
+
+// takes 'lastPos' as argument 
+function snakeDies(snake) {
+	snake = snake.reverse(); 
+	for (let i = 0; i < snake.length; i++) {
+    snake[i].style.backgroundColor = red; 
+	}
+}
 
 var interval = setInterval(function(){
-    timesRun += 1;
-    /* if(timesRun === 1000){ clearInterval(interval); } */
 
 	if (direction === 'down' && moves === 0) {
-		colors[currentPos].style.backgroundColor = 'orange';
+		colors[currentPos].style.backgroundColor = black;
 		moves++;
-		colors[currentPos].style.backgroundColor = 'white';
+		// colors[currentPos].style.backgroundColor = '#ecf0f1';
 		lastPos.push(colors[currentPos]); 
 	}
 
 	if (direction == 'right') {
 		moves++;  
 		currentPos++;
+		if (colors[currentPos].style.backgroundColor !== black) {
 
-		 if (colors[currentPos].style.backgroundColor !== 'orange') {
-			colors[currentPos].style.backgroundColor = 'orange';
-			lastPos.push(colors[currentPos]); 
+			if (!checkHorizontalBoundaries(currentPos, direction)) {
+				clearInterval(interval);
+				snakeDies(lastPos); 
+			} else {
+				colors[currentPos].style.backgroundColor = black;
+				lastPos.push(colors[currentPos]);
+				snakeChange(); 
+			}
+
 		} else {
-			alert('error');
-			return; 
-		}
-
-		if(moves > 5) {
-			lastPos[0].style.backgroundColor = 'white';
-			backup = lastPos[0];
-			lastPos.shift();
-		}
+			snakeDies(lastPos); 
+			clearInterval(interval);
+		} 
 	}
 
 	if (direction === 'left') {
 		moves++;
 		--currentPos;
-		if (colors[currentPos].style.backgroundColor !== 'orange') {
-			colors[currentPos].style.backgroundColor = 'orange';
-			lastPos.push(colors[currentPos]);  
+		if (colors[currentPos].style.backgroundColor !== black) {
+			if (!checkHorizontalBoundaries(currentPos, direction)) {
+				clearInterval(interval);
+				snakeDies(lastPos);
+			} else {
+				colors[currentPos].style.backgroundColor = black;
+				lastPos.push(colors[currentPos]);
+				snakeChange();
+			}
 		} else {
-			alert('error');
-			return; 
-		}
-
-		if (moves > 5) {
-			lastPos[0].style.backgroundColor = 'white';
-			backup = lastPos[0];
-			lastPos.shift();
+			clearInterval(interval);
+			snakeDies(lastPos); 
 		}
 	}
 
 	if (direction === 'down' && moves > 0) {
 		moves++;
-		currentPos+=10;
+		currentPos+=rowLength;  
 		if (!colors[currentPos]) {
 			clearInterval(interval);
-			console.log('bound');
-			// to do....
+			snakeDies(lastPos);
 		}
-		if (colors[currentPos].style.backgroundColor !== 'orange') {
-			colors[currentPos].style.backgroundColor = 'orange';
+		if (colors[currentPos].style.backgroundColor !== black) {
+			colors[currentPos].style.backgroundColor = black;
 			lastPos.push(colors[currentPos]);  
+			snakeChange();
 		} else {
-			alert('error');
-			return; 
-		}
-
-		if(moves > 5) {
-			lastPos[0].style.backgroundColor = 'white';
-			backup = lastPos[0];
-			lastPos.shift();
+			clearInterval(interval);
+			snakeDies(lastPos);
 		}
 	}
 
 	if (direction === 'up') {
 		moves++;
-		currentPos = currentPos - 10;
+		currentPos = currentPos - rowLength;
 		if (!colors[currentPos]) {
 			clearInterval(interval);
-			console.log('bound');
-			// to do....
+			snakeDies(lastPos);
 		}
-		if (colors[currentPos].style.backgroundColor !== 'orange') {
-			colors[currentPos].style.backgroundColor = 'orange';
+		if (colors[currentPos].style.backgroundColor !== black) {
+			colors[currentPos].style.backgroundColor = black;
 			lastPos.push(colors[currentPos]); 
+			snakeChange();
 		} else {
-			alert('error');
-			return; 
-		}
-
-		if (moves > 5) {
-			lastPos[0].style.backgroundColor = 'white';
-			backup = lastPos[0];
-			lastPos.shift();
-		}
+			clearInterval(interval);
+			snakeDies(lastPos);
+		} 
 	}
-
-	// initialize snake length 
-	if (moves > 5 && trimTail === false) {
-		lastPos[0].style.backgroundColor = 'white';
-		backup = lastPos[0];
-		lastPos.shift(); 
-		trimTail = true; 
-	}
-
-	if (checkHorizontalBoundaries(currentPos+1, direction) === 'bound') {
-		clearInterval(interval);
-		console.log('bound');
-		// to do....  
-	} 
 
 	for (var s = 0; s < foodLocation.length; s++) {
 		if (direction === 'right'){
 			if (currentPos - 1 === foodLocation[s]) {
-				lastPos.unshift(backup)
-				colors[backup].style.backgroundColor = 'orange';
+				lastPos.unshift(backup);
+				generateFood(); 
+				colors[backup].style.backgroundColor = black;
 				return false; 
 			}
 		}
+
 		if (direction === 'left'){
 			if (currentPos + 1 === foodLocation[s]) {
-				lastPos.unshift(backup)
-				colors[backup].style.backgroundColor = 'orange';
+				lastPos.unshift(backup);
+				generateFood(); 
+				colors[backup].style.backgroundColor = black;
 				return false; 
 			}
 		}
+
 		if (direction === 'down'){
-			if (currentPos - 10 === foodLocation[s]) {
-				lastPos.unshift(backup)
-				colors[backup].style.backgroundColor = 'orange';
+			if (currentPos - rowLength === foodLocation[s]) {
+				lastPos.unshift(backup);
+				generateFood(); 
+				colors[backup].style.backgroundColor = black;
 				return false; 
 			}
 		}
+
 		if (direction === 'up'){
-			if (currentPos + 10 === foodLocation[s]) {
-				lastPos.unshift(backup)
-				colors[backup].style.backgroundColor = 'orange';
-				return false; 
+			if (currentPos + rowLength === foodLocation[s]) {
+				lastPos.unshift(backup);
+				generateFood(); 
+				colors[backup].style.backgroundColor = black;
+				return fSalse; 
 			}
 		}
 	}
 
 	// generate food every 100 moves 
-	if (moves % 100 === 0 && moves !== 0) {
-		generateFood();
-	}
+	// if (moves % 100 === 0 && moves !== 0) { generateFood(); }
 
 	d.onkeyup = d.body.onkeyup = function(e){
     if(e.keyCode == 32){
     	clearInterval(interval);
-			console.log('paused');
+			return; 
     }
 	}
-
 }, 120); 
