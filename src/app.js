@@ -1,6 +1,8 @@
 import {generateTable, colorTable} from './modules/generateTable';
-import {shuffle} from "./modules/shuffle";
+import {shuffle} from './modules/shuffle';
 
+
+// var white = 'rgb(123, 237, 159)';
 var white = 'rgb(255, 255, 255)';
 var green = 'rgb(51, 217, 178)';
 var black = 'rgb(44, 62, 80)';
@@ -10,6 +12,36 @@ var red = 'rgb(179, 57, 57)';
 generateTable();
 var colors = document.getElementsByClassName('color');
 colorTable(colors, white);
+
+var gameVar; 
+function stopGame() {
+    clearInterval(gameVar);
+}
+
+function initGame(time) {
+    gameVar = setInterval(startGame, time);
+}
+
+var menu = document.querySelector('.menu');
+var playField = document.getElementById('myDynamicTable');
+
+document.getElementById('slow').onclick = function(){ 
+	initGame(200);
+	menu.style.display = 'none';
+	playField.style.display = 'block';
+}
+
+document.getElementById('medium').onclick = function(){ 
+	initGame(120);
+	menu.style.display = 'none';
+	playField.style.display = 'block';
+}
+
+document.getElementById('fast').onclick = function(){ 
+	initGame(80);
+	menu.style.display = 'none';
+	playField.style.display = 'block';
+}
 
 // arrow key press
 var d = document;
@@ -37,13 +69,12 @@ d.onkeydown = d.body.onkeydown = function(e){
 
 // control snake 
 // current board position based on total 'length'
-var currentPos = 4; // 4 is start position 
+var currentPos = 315; // is middle start position 
 var lastPos = [];
 var trimTail = false;
 var foodLocation = [];
 var backup;  
 var moves = 0;
-
 
 // board specs 
 var tableCells = colors.length;
@@ -51,7 +82,6 @@ var height = document.getElementById('table').rows.length;
 var rowLength = Math.ceil((tableCells/height))+1; // should be divisible by 10 
 
 function checkHorizontalBoundaries(args, dir) {
-	console.log(rowLength)
 	if (dir === 'right') {
 		if (args % rowLength === 0) {  
 			return false; 
@@ -71,11 +101,9 @@ function generateFood() {
 	let rand = shuffle([...Array(colors.length).keys()])[0];
 	if (colors[rand].style.backgroundColor !== green && colors[rand].style.backgroundColor !== black) {
 		colors[rand].style.backgroundColor = green;
-		foodLocation.push(rand); 
+		foodLocation.push(rand);  
 	}
 }
-
-generateFood(); 
 
 // initialize snake length 
 function snakeChange() {
@@ -93,34 +121,53 @@ function snakeDies(snake) {
 	for (let i = 0; i < snake.length; i++) {
     snake[i].style.backgroundColor = red; 
 	}
+	// return to menu
+	setTimeout(function(){
+		for (let i = 0; i < colors.length; i++) {
+	    colors[i].style.backgroundColor = white; 
+	    moves = 0;  
+			lastPos.length = 0;
+			currentPos = 315;
+			foodLocation.length = 0;
+			direction = null; 
+		}
+		menu.style.display = 'block';
+		playField.style.display = 'none';
+	}, 2000);
+
+	 stopGame(); 
 }
 
-var interval = setInterval(function(){
+function startGame() {
 
-	if (direction === 'down' && moves === 0) {
-		colors[currentPos].style.backgroundColor = black;
-		moves++;
-		// colors[currentPos].style.backgroundColor = '#ecf0f1';
-		lastPos.push(colors[currentPos]); 
+	// initializes snake + food
+	if (
+			direction === 'down' || 
+			direction === 'up' || 
+			direction === 'right' || 
+			direction === 'left'
+			) {
+		if (moves === 0) {
+			colors[currentPos].style.backgroundColor = black;
+			generateFood(); 
+			moves++;
+			lastPos.push(colors[currentPos]); 
+		}
 	}
 
 	if (direction == 'right') {
 		moves++;  
 		currentPos++;
 		if (colors[currentPos].style.backgroundColor !== black) {
-
 			if (!checkHorizontalBoundaries(currentPos, direction)) {
-				clearInterval(interval);
 				snakeDies(lastPos); 
 			} else {
 				colors[currentPos].style.backgroundColor = black;
 				lastPos.push(colors[currentPos]);
 				snakeChange(); 
 			}
-
 		} else {
 			snakeDies(lastPos); 
-			clearInterval(interval);
 		} 
 	}
 
@@ -129,7 +176,6 @@ var interval = setInterval(function(){
 		--currentPos;
 		if (colors[currentPos].style.backgroundColor !== black) {
 			if (!checkHorizontalBoundaries(currentPos, direction)) {
-				clearInterval(interval);
 				snakeDies(lastPos);
 			} else {
 				colors[currentPos].style.backgroundColor = black;
@@ -137,7 +183,6 @@ var interval = setInterval(function(){
 				snakeChange();
 			}
 		} else {
-			clearInterval(interval);
 			snakeDies(lastPos); 
 		}
 	}
@@ -146,7 +191,6 @@ var interval = setInterval(function(){
 		moves++;
 		currentPos+=rowLength;  
 		if (!colors[currentPos]) {
-			clearInterval(interval);
 			snakeDies(lastPos);
 		}
 		if (colors[currentPos].style.backgroundColor !== black) {
@@ -154,7 +198,6 @@ var interval = setInterval(function(){
 			lastPos.push(colors[currentPos]);  
 			snakeChange();
 		} else {
-			clearInterval(interval);
 			snakeDies(lastPos);
 		}
 	}
@@ -163,7 +206,6 @@ var interval = setInterval(function(){
 		moves++;
 		currentPos = currentPos - rowLength;
 		if (!colors[currentPos]) {
-			clearInterval(interval);
 			snakeDies(lastPos);
 		}
 		if (colors[currentPos].style.backgroundColor !== black) {
@@ -171,7 +213,6 @@ var interval = setInterval(function(){
 			lastPos.push(colors[currentPos]); 
 			snakeChange();
 		} else {
-			clearInterval(interval);
 			snakeDies(lastPos);
 		} 
 	}
@@ -209,18 +250,14 @@ var interval = setInterval(function(){
 				lastPos.unshift(backup);
 				generateFood(); 
 				colors[backup].style.backgroundColor = black;
-				return fSalse; 
+				return false; 
 			}
 		}
 	}
 
-	// generate food every 100 moves 
-	// if (moves % 100 === 0 && moves !== 0) { generateFood(); }
-
 	d.onkeyup = d.body.onkeyup = function(e){
     if(e.keyCode == 32){
-    	clearInterval(interval);
-			return; 
+    	stopGame();
     }
 	}
-}, 120); 
+} 

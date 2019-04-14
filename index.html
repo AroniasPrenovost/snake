@@ -5,13 +5,20 @@
     <title>Snake</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="src/css/styles.css">
-
 </head>
-<body>
-    <h1>Snake</h1>
-    <p>Press the down &#9660; arrow key to start game.</p>
-    </div>
-    <div id="myDynamicTable"></div>
-    <script src="dist/bundle.js"></script>
-</body>
+	<body>
+	<div class='game-container'>
+		<div id='menu' class='menu'>
+			<div class='menu-content'>
+				<p>SNAKE</p>
+				<h3>CHOOSE LEVEL:</h3>
+				<p id='slow'><a href='#'>SLUG</a></p>
+				<p id='medium'><a href='#'>WORM</a></p>
+				<p id='fast'><a href='#'>PYTHON</a></p>
+			</div>
+		</div>
+		<div id='myDynamicTable'></div>
+	</div>
+	<script src='dist/bundle.js'></script>
+	</body>
 </html>
