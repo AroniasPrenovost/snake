@@ -1,15 +1,21 @@
 body {
-	background-color: #7bed9f;
+	background-color: rgb(123, 237, 159);
 }
 
 .game-container {
 	margin: 0 auto;
 	max-width: 700px;
 	height: 500px;
-	background-color: #7bed9f;
+	background-color: rgb(123, 237, 159);
 	border-radius: 0px;
 	border: 2px solid black; 
 	overflow: hidden;
+}
+
+.points-container {
+	margin: 0 auto;
+	max-width: 700px;
+	margin-top:8px;
 }
 
 .menu {

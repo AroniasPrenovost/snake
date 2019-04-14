@@ -1,10 +1,8 @@
 import {generateTable, colorTable} from './modules/generateTable';
 import {shuffle} from './modules/shuffle';
 
-
-// var white = 'rgb(123, 237, 159)';
-var white = 'rgb(255, 255, 255)';
-var green = 'rgb(51, 217, 178)';
+var white = 'rgb(123, 237, 159)';
+var green = 'rgb(241, 196, 15)';
 var black = 'rgb(44, 62, 80)';
 var red = 'rgb(179, 57, 57)'; 
 
@@ -42,6 +40,10 @@ document.getElementById('fast').onclick = function(){
 	menu.style.display = 'none';
 	playField.style.display = 'block';
 }
+
+var points = 0; 
+var scoreBoard = document.getElementById('points');
+scoreBoard.textContent = `Points: ${points}`;
 
 // arrow key press
 var d = document;
@@ -221,7 +223,8 @@ function startGame() {
 		if (direction === 'right'){
 			if (currentPos - 1 === foodLocation[s]) {
 				lastPos.unshift(backup);
-				generateFood(); 
+				generateFood();
+				points+=1;  
 				colors[backup].style.backgroundColor = black;
 				return false; 
 			}
@@ -231,6 +234,7 @@ function startGame() {
 			if (currentPos + 1 === foodLocation[s]) {
 				lastPos.unshift(backup);
 				generateFood(); 
+				points+=1;  
 				colors[backup].style.backgroundColor = black;
 				return false; 
 			}
@@ -240,6 +244,7 @@ function startGame() {
 			if (currentPos - rowLength === foodLocation[s]) {
 				lastPos.unshift(backup);
 				generateFood(); 
+				points+=1;  
 				colors[backup].style.backgroundColor = black;
 				return false; 
 			}
@@ -249,11 +254,15 @@ function startGame() {
 			if (currentPos + rowLength === foodLocation[s]) {
 				lastPos.unshift(backup);
 				generateFood(); 
+				points+=1;  
 				colors[backup].style.backgroundColor = black;
 				return false; 
 			}
 		}
 	}
+
+	// 
+	scoreBoard.textContent = `Points: ${points}`;
 
 	d.onkeyup = d.body.onkeyup = function(e){
     if(e.keyCode == 32){
