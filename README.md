@@ -1,3 +1,10 @@
-# Gulp, Sass, webpack and ES6 modules boilerplate
-# runs 'webpack -d --watch' and 'gulp watchy' simultaneously 
-# npm start 
+## Snake
+
+The Snake game in Javascript. 
+
+```
+$ npm install ; npm install gulp@3.9.1 --save
+```
+```
+$ npm start
+```
