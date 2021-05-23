@@ -29,6 +29,7 @@ body {
 
 p {
 	display:inline;
+	margin: 4px;
 }
 
 table {
@@ -44,6 +45,7 @@ table {
 td {
 	background-color: transparent; /* outer, trimmed table secton. not apart of play field */
 	border:1px solid rgb(247, 241, 227);
+	border-radius: 50px;
 	font-size:4px;
 	height:12px;
 	vertical-align: bottom;

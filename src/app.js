@@ -43,7 +43,7 @@ document.getElementById('fast').onclick = function () {
 
 var points = 0;
 var scoreBoard = document.getElementById('points');
-scoreBoard.textContent = `Points: ${points}`;
+scoreBoard.textContent = `Length: ${points}`;
 
 // arrow key press
 var d = document;
@@ -95,6 +95,7 @@ function checkHorizontalBoundaries(args, dir) {
 			return false;
 		}
 	}
+
 	return true;
 }
 

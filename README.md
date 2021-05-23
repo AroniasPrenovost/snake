@@ -1,11 +1,11 @@
 ## Snake in JavaScript 
 
-Once you've selected a speed ('slug', 'worm', or 'python'), begin playing
-by pressing any keyboard arrow key.
+sh```
+$ npm install 
+```
 
-```
-$ npm install ; npm install gulp@3.9.1 --save
-```
-```
+sh```
 $ npm start
 ```
+
+Once you've selected a speed, start game by pressing any keyboard arrow key.
